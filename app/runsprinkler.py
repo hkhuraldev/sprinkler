@@ -5,8 +5,8 @@ from datetime import datetime
 TIME_TO_RUN = 10
 
 def logEvent(strToLog):
-        f = open("sprinkler.log","a")
-        f.write(datetime.now() + " - " +strToLog)
+        f = open("../sprinkler.log","a")
+        f.write(str(datetime.now()) + " - " + strToLog + "\n")
         f.close()
 
 def startWatering(zone, timeToRun):

@@ -1,6 +1,9 @@
-from flask import Flask, render_template, flash, request
+from flask import Flask, render_template, flash, request, redirect
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
-from runsprinkler import runsprinkler 
+import thread
+import sys
+sys.path.append('../app')
+import runsprinkler 
 
 #App config.
 DEBUG = True
@@ -26,12 +29,17 @@ class ReusableForm(Form):
 		if form.validate():
 			print 'form validated'
 			flash('Watering zone '+ zone + ' for ' + time + ' minutes.')
-                        runsprinkler.startWatering(zone,time)
+                        thread.start_new_thread(runsprinkler.startWatering, (int(zone) - 1,int(time)))
+		        return redirect('/showLogs')
 		else:
 			print 'form not validated'
 			flash('All form fields are required')
 
 		return render_template('manual.html', form=form)
+
+	@app.route("/showLogs", methods=['GET', 'POST'])
+        def showLogs():
+            return render_template('showLogs.html')
 
 	@app.route("/logs", methods=['GET', 'POST'])
 	def stream():
